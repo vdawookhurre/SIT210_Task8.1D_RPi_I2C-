@@ -1,0 +1,44 @@
+import smbus
+import time
+
+bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
+Device = 0x23
+ONE_TIME_HIGH_RES_MODE = 0x20
+
+def sensorOn():
+    bus.write_byte(Device, 0x01)
+    
+def convertToNumber(data):
+  return ((data[1] + (256 * data[0])) / 1.2)
+    
+def getLightLevel(addr=0x23):
+    data = bus.read_i2c_block_data(addr,0x11)
+    return convertToNumber(data)
+
+def processlightLevel(light):
+    if light < 20:
+        return ("Too Dark")
+        
+    elif light >= 20 and light < 40:
+        return ("Dark")
+        
+    elif light >= 40 and light < 60:
+        return ("Medium")
+        
+    elif light >= 60 and light < 80:
+        return ("Bright")
+        
+    elif light > 100:
+        return ("Too Bright")
+        
+def main():
+    while True:
+        sensorOn();
+        light= getLightLevel()
+        LightLevel = processlightLevel(light)
+        print("Light Level : " + str(LightLevel) + ", " + str(light))
+        time.sleep(1)
+       
+       
+if __name__=="__main__":
+    main()
