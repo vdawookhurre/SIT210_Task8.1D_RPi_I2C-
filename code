@@ -28,7 +28,7 @@ def processlightLevel(light):
     elif light >= 60 and light < 80:
         return ("Bright")
         
-    elif light > 100:
+    elif light > 80:
         return ("Too Bright")
         
 def main():
